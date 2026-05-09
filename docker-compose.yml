@@ -1,0 +1,66 @@
+services:
+  rabbit:
+    image: ${DOCKER_REGISTRY-}rabbit
+    build:
+      context: .
+      dockerfile: Rabbit/Dockerfile
+    depends_on: 
+      - rabbit.database
+    networks:
+      - dev
+
+  rabbitmq.producer:
+    image: ${DOCKER_REGISTRY-}rabbitmqproducer
+    build:
+      context: ../RabbitMQ.Producer
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbit.rabbitmq
+    networks:
+      - dev
+  
+
+  redis:
+    image: redis
+    container_name: rabbit.redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dev
+  
+
+  rabbit.database:
+    image: postgres:18.3
+    container_name: rabbit.database
+    environment:
+      - POSTGRES_DB=rabbit
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres  
+    volumes:
+      - ./.containers/rabbit-db:/var/lib/postgresql/18/docker
+    ports:
+     - 5432:5432
+    networks:
+      - dev
+
+
+  rabbit.rabbitmq:
+    image: rabbitmq:4.3.0-management
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - 15672:15672
+    networks:
+      - dev
+
+
+
+
+networks:
+    dev:
+      driver: bridge
+
+volumes:
+  sql-data:

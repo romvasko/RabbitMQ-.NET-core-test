@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../RabbitMQ.Producer/RabbitMQ.Producer.csproj" Id="e2139238-d331-4406-99d3-ea23a7e5a342" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="Rabbit/Rabbit.csproj" />
+</Solution>
